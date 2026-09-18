@@ -1,6 +1,8 @@
 # AST Explorer
 
-A browser-based tool for exploring the syntax tree of a source file, side by side with its source. Built on [`web-tree-sitter`](https://github.com/tree-sitter/tree-sitter/tree/master/lib/binding_web) with grammars for Python, JavaScript, TypeScript, Go, and Rust.
+A browser-based tool for exploring the syntax tree of a source file, side by side with its source. Built on [`web-tree-sitter`](https://github.com/tree-sitter/tree-sitter/tree/master/lib/binding_web).
+
+**Live demo:** [astexplorer.recurse.com](https://astexplorer.recurse.com)
 
 Left pane shows the source; right pane shows a collapsible tree of every AST node (à la [astexplorer.net](https://astexplorer.net)). Click any node to highlight the source range it covers.
 
@@ -24,10 +26,11 @@ Then open **http://localhost:8000/index.html**.
 
 `npm run build` copies the app plus only the `.js`/`.wasm` files it actually
 imports (skipping `canvas`, `.node` binaries, source packages, etc.) into
-`dist/`, laid out so `mwast.js`'s existing `./node_modules/...` import paths
-resolve unmodified. Upload `dist/`'s contents as-is to any static host —
-it's fully self-contained and needs no server-side logic, just HTTPS (ES
-modules require a real origin, not `file://`).
+a `dist/` directory, laid out so `mwast.js`'s existing `./node_modules/...`
+import paths resolve unmodified. Upload `dist/`'s contents as-is to any static
+host — it's fully self-contained and needs no server-side logic, just HTTPS (ES
+modules require a real origin, not `file://`). The current production deployment
+is available at [astexplorer.recurse.com](https://astexplorer.recurse.com).
 
 ```bash
 npm run build
@@ -50,6 +53,6 @@ scripts/build-dist.sh the static-hosting bundle builder (npm run build)
 
 ## Notes
 
-- Adding another language means adding its `tree-sitter-*` grammar package, then adding an entry to `WASM_BY_LANGUAGE` (and `LANGUAGE_BY_EXT`, and an `<option>`) in `mwast.js`/`index.html` — and a `copy_vendor_file` line for its `.wasm` in `scripts/build-dist.sh`.
+- Adding another language means adding its `tree-sitter-*` grammar package, then adding an entry to `WASM_BY_LANGUAGE` (and `LANGUAGE_BY_EXT`, and an `<option>`) in `mwast.js`/`index.html` — and rebuilding.
 - No Python dependencies (`python3 -m http.server` is stdlib-only) — `npm install` is the only setup step.
 - The selected source file is read in the browser and is not uploaded anywhere.
