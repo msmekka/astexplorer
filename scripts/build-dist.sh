@@ -14,7 +14,7 @@ fi
 rm -rf dist
 mkdir -p dist
 
-cp index.html mwast.js dist/
+cp index.html mwast.js package.json dist/
 
 copy_vendor_file() {
     local rel="$1"

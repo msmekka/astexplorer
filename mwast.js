@@ -10,6 +10,7 @@ const treeElement = document.getElementById("tree");
 const fileInput = document.getElementById("file-input");
 const fileName = document.getElementById("file-name");
 const languageSelect = document.getElementById("language-select");
+const versionElement = document.getElementById("version");
 
 // Keys match the <option value> list in #language-select.
 const WASM_BY_LANGUAGE = {
@@ -33,6 +34,19 @@ let languages;
 
 function extOf(filename) {
     return filename.slice(filename.lastIndexOf(".") + 1).toLowerCase();
+}
+
+/**
+ * Fetch package.json and render its version in the toolbar byline, so the
+ * running page always names the build it was served from.
+ */
+async function showVersion() {
+    try {
+        const pkg = await fetch("./package.json").then(r => r.json());
+        versionElement.textContent = `v${pkg.version}`;
+    } catch (err) {
+        console.error("could not load version:", err);
+    }
 }
 
 /**
@@ -81,10 +95,10 @@ function highlightSource(start, end) {
 function labelForCursor(cursor) {
     const cn = cursor.currentNode;
     const nt_typelabel= cn.isNamed ? "type" : "anon";
-    const cn_field = cn.currentFieldName;
+    const cn_field = cursor.currentFieldName;
     let parts = [];
 
-    if (cn_field) parts.push(`<span class="field">${cn_field}</span>`);
+    if (cn_field) parts.push(`<span class="field">${cn_field}</span> `);
     parts.push(`<span class="${nt_typelabel}">${cn.type}</span>`);
     if (cn.childCount === 0 && cn.isNamed) {
         const text = cn.text.length < 40 ? cn.text : cn.text.slice(0,40) + "..."
@@ -154,6 +168,7 @@ function renderAST(parser) {
 /**
  * 
  */
+showVersion();
 const parser = await initParser().catch(err => console.error(err));
 if (parser) {
     fileInput.addEventListener("change", async () => {
